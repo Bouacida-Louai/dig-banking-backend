@@ -9,23 +9,26 @@ import org.backend.digitalbankingbackendimpl.enums.AccountStatus;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE )
-@DiscriminatorColumn(name = "typeee" ,  discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "TYPE" ,  discriminatorType = DiscriminatorType.STRING)
 @Entity
 @Data
 @NoArgsConstructor @AllArgsConstructor
 
-public class BankAccount {
+public abstract class BankAccount {
 
     @Id
+
     private String id;
-    private Double balance;
     private Date CreatedAt;
+    @Enumerated(EnumType.STRING)
     private AccountStatus status ;
+    private Double balance;
     @ManyToOne
     private  Customer customer;
-    @OneToMany(mappedBy = "bankAccount", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "bankAccount", fetch = FetchType.EAGER)
     private List<AccountOperation> accountOperations;
 
 
