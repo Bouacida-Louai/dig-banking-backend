@@ -1,5 +1,9 @@
 package org.backend.digitalbankingbackendimpl;
 
+import org.backend.digitalbankingbackendimpl.dto.BankAccountDto;
+import org.backend.digitalbankingbackendimpl.dto.CurrentBankAccountDto;
+import org.backend.digitalbankingbackendimpl.dto.CustomerDto;
+import org.backend.digitalbankingbackendimpl.dto.SavingBankAccountDto;
 import org.backend.digitalbankingbackendimpl.entities.*;
 import org.backend.digitalbankingbackendimpl.enums.AccountStatus;
 import org.backend.digitalbankingbackendimpl.enums.OperationType;
@@ -32,7 +36,7 @@ public class DigitalBankingBackendImplApplication {
         CommandLineRunner init(BankAccountService  bankAccountService)  {
             return args -> {
                Stream.of("hassane","imane","mouhamed").forEach(name ->{
-                   Customer customer= new Customer();
+                   CustomerDto customer= new CustomerDto();
                    customer.setName(name);
                    customer.setEmail(name +"gmail.com");
                    bankAccountService.saveCustomer(customer);
@@ -42,11 +46,16 @@ public class DigitalBankingBackendImplApplication {
                    try {
                        bankAccountService.saveSavingBankAccount(Math.random()*8000,5,cust.getId());
                        bankAccountService.saveCurrentBankAccount(Math.random()*90000, 9000,cust.getId());
-                       List<BankAccount> bankAccounts = bankAccountService.bankAccountListe();
-                       for (BankAccount bankAccount : bankAccounts) {
+                       List<BankAccountDto> bankAccounts = bankAccountService.bankAccountListe ();
+                       for (BankAccountDto bankAccount : bankAccounts) {
                            for (int i = 0; i <10 ; i++) {
-                               bankAccountService.credit(bankAccount.getId(), Math.random() * 9000, "Credit Operation");
-                               bankAccountService.debit(bankAccount.getId(), 1000*Math.random()*9000 , "Debit Operation");
+                               String accountId;
+                               if (bankAccount instanceof SavingBankAccountDto){
+                                   accountId = ((SavingBankAccountDto) bankAccount).getId();
+                               }else
+                                   accountId =((CurrentBankAccountDto) bankAccount).getId();
+                               bankAccountService.credit(accountId, Math.random() * 9000, "Credit Operation");
+                               bankAccountService.debit(accountId, 10*Math.random()*90 , "Debit Operation");
                            }
                        }
 

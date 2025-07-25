@@ -17,7 +17,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor @AllArgsConstructor
 
-public abstract class BankAccount {
+public  class BankAccount {
 
     @Id
 
